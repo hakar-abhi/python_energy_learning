@@ -66,3 +66,58 @@ values = [10, 20, 15, 30, 25]
 window_size = 3
 range_values = rolling_range(values,window_size)
 print(range_values)
+
+
+def detect_large_change(values,threshold):
+    if not values or len(values) == 1:
+        return None
+    position = 0
+    anomaly_indices = []
+    while (position+1) < len(values):
+        if abs(values[position]-values[position+1]) > threshold:
+            anomaly_indices.append(position+1)
+        position+=1
+    return anomaly_indices
+values = [100, 105, 107, 160, 162, 90]
+threshold = 30
+# result = detect_large_change(values,threshold)
+# print(result)
+
+def longest_increasing_streak(values):
+    if not values:
+        return 0
+    
+    streak_count = 1
+    largest_streak = 1
+    
+    for i in range(1,len(values)):
+        
+        if values[i]-values[i-1]>0:
+            streak_count+=1
+        else:
+            streak_count = 1
+        if streak_count>largest_streak:
+            largest_streak =streak_count
+            
+    return largest_streak
+
+values = [100, 105, 110, 90, 95, 97, 99]
+# result = longest_increasing_streak(values)
+# print(result)
+
+def longest_decreasing_streak(values):
+    if not values:
+        return 0
+    streak = 1
+    largest_decreasing_streak = 1
+    for i in range(1,len(values)):
+        if values[i]-values[i-1]<0:
+            streak+=1
+        else:
+            streak=1
+        if streak > largest_decreasing_streak:
+            largest_decreasing_streak = streak
+    return largest_decreasing_streak
+values = [120, 115, 110, 130, 125, 120, 118]
+# result = longest_decreasing_streak(values)
+# print(result)
