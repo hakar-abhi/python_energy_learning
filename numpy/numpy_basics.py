@@ -182,14 +182,150 @@ energy = np.array([10, 20, 15, 25, 30])
 cumulative_sum = np.cumsum(energy)
 # print(cumulative_sum)
 
-print(np.cumprod(energy))
+# print(np.cumprod(energy))
 
 power2 = np.array([100, 120, 115, 140, 150])
 
 jumps = np.diff(power2)
 max_jump = np.max(jumps)
-print(jumps)
-print(np.argmax(jumps))
+# print(jumps)
+# print(np.argmax(jumps))
 
-print(np.min(jumps))
+# print(np.min(jumps))
+
+value_before_largest_jump = power2[np.argmax(jumps)]
+# print(value_before_largest_jump)
+
+value_after_largest_jump = power2[np.argmax(jumps)+1]
+# print(value_after_largest_jump)
+power3 = np.array([100, 120, 120, 110, 135])
+changes = np.diff(power3)
+# print(changes)
+change_sign = np.sign(changes)
+# print(change_sign)
+total_increase = np.sum(change_sign==1)
+# print(total_increase)
+filtered_changes = changes[changes>0]
+# print(np.mean(filtered_changes))
+
+filtered_neg = changes[changes<0]
+# print(np.mean(np.abs(filtered_neg)))
+
+largest_change_index = np.argmax(np.abs(changes))
+# print(largest_change_index)
+
+largest_change_with_sign = changes[largest_change_index]
+# print(largest_change_with_sign)
+
+##                  Normalize an array to 0-1 range           ##
+
+power4 = np.array([80, 120, 150, 90, 170, 200, 110])
+# print((power4-np.min(power4))/(np.max(power4)-np.min(power4)))
+
+
+##                            z score standardization          ##
+
+z_score_values = (power4-np.mean(power4))/np.std(power4)
+# print(z_score_values)
+
+filtered_values = power4[z_score_values>1]
+# print(filtered_values)
+
+between = power4[(z_score_values>=-1) & (z_score_values<=1)]
+# print(between)
+
+# print(np.sum((z_score_values<-1) | (z_score_values>1)))
+
+out_of_bound_values = power4[(z_score_values<-1)|(z_score_values>1)]
+# print(out_of_bound_values)
+
+get_index = np.where((z_score_values<-1)|(z_score_values>1))[0]
+# print(get_index)
+
+##           Boolean mask for matrices            ##
+
+matrix2 = np.array([
+    [80, 120, 150],
+    [90, 170, 200]
+])
+
+values_greater_than_120 = matrix2[matrix2>120]
+# print(values_greater_than_120)
+
+filtered_matrix = np.where(matrix2<=120,0,matrix2)
+# print(filtered_matrix)
+
+##                      NumPy Broadcasting           ##
+
+offsets = np.array([10,20,30])
+# print(offsets.shape)
+
+# result = matrix2+offsets
+# print(result.shape)
+# print(result)
+
+row_offsets = np.array([
+    [10],
+    [20]
+])
+# print(row_offsets.shape)
+
+result2 = matrix2+row_offsets
+# print(result2)
+# print(result2.shape)
+
+
+##                     Stacking            ##
+
+a = np.array([10, 20, 30])
+b = np.array([40, 50, 60])
+
+c = np.stack((a,b),axis=0)
+# print(c.shape)
+# print(c)
+c_edit = np.vstack((a,b))
+# print(np.array_equal(c,c_edit))
+
+d = np.stack((a,b),axis=1)
+# print(d)
+# print(d.shape)
+
+hstack = np.hstack((a,b))
+# print(hstack)
+
+##                  Concatenating           ##
+
+concatenated = np.concatenate((a,b))
+# print(concatenated)
+
+a2 = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+b2 = np.array([
+    [5, 6],
+    [7, 8]
+])
+
+a2b2 = np.concatenate((a2,b2), axis = 1)
+# print(a2b2)
+
+stack_work = np.stack((a2,b2),axis=0)
+# print(stack_work)
+# print(stack_work.shape)
+
+arr = np.array([10, 20, 30, 40, 50, 60])
+arr2 = np.array([10, 20, 30, 40, 50, 60, 70])
+
+# equal_parts = np.split(arr2,3)
+# print(equal_parts)
+
+equal_parts2 = np.array_split(arr2,3)
+print(equal_parts2)
+
+
+
+
+
 
