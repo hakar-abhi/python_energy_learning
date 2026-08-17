@@ -322,7 +322,222 @@ arr2 = np.array([10, 20, 30, 40, 50, 60, 70])
 # print(equal_parts)
 
 equal_parts2 = np.array_split(arr2,3)
-print(equal_parts2)
+# print(equal_parts2)
+
+split_with_indices = np.split(arr,[2,5])
+# print(split_with_indices)
+
+matrix3 = np.array([
+    [1, 2, 3, 4],
+    [5, 6, 7, 8]
+])
+
+split_in_h= np.hsplit(matrix3,2)
+# print(split_in_h)
+
+
+matrix4 = np.array([
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+    [13, 14, 15, 16]
+])
+
+left, right = np.hsplit(matrix4,2)
+# print(left,right)
+joined = np.concatenate((left,right),axis=1)
+
+# print(joined)
+# print(joined.shape)
+
+matrix5 = np.array([
+    [1, 2, 3],
+    [4, 5, 6]
+])
+# print(matrix5.T.T)
+
+a = np.array([10, 20, 30])
+a_reshaped = np.reshape(a,(3,1))
+# print(a_reshaped)
+b= a.T 
+# print(b)
+power5 = np.array([100, 120, 100, 150, 120, 100, 170])
+unique_power, counts = np.unique(power5, return_counts=True)
+# print(unique_power)
+# print(counts)
+
+max_repeat_power = unique_power[np.argmax(counts)]
+# print(max_repeat_power)
+
+##   Array creation helpers ##
+
+# Five zeros
+five_zeros = np.zeros(5,).astype(int)
+# print(five_zeros)
+
+# Five ones
+five_ones = np.ones(5,).astype(int)
+# print(five_ones)
+
+# Integers from 0 to 9
+
+integers = np.arange(0,9)
+# print(integers)
+
+#Equal spaced values
+equal_spaced_values = np.linspace(0,100,5).astype(int)
+# print(equal_spaced_values)
+
+# arange() with step
+# print(np.arange(0,1,0.2))
+
+# matrix of size (2,3) with all zeros
+matrix_zeros = np.zeros((2,3))
+# print(matrix_zeros)
+
+# matrix of shape (3,2) all filled with 7
+matrix_seven = np.full((3,2),7,dtype=int)
+# print(matrix_seven)
+
+# Identity matrix
+
+I_matrix = np.eye(4,dtype=np.int64)
+# print(I_matrix)
+# print(I_matrix.shape)
+# print(I_matrix.dtype)
+
+# 1D array of 5 random integers from 1 to 10
+
+random_1_10 = np.random.randint(1,10,5)
+# print(random_1_10)
+
+random_matrix = np.random.randint(1,100,(2,3))
+# print(random_matrix)
+
+random_matrix_float = np.random.rand(2,3)
+# print(random_matrix_float)
+
+random_10_20 = np.random.rand(2,3)*10+10
+# print(random_10_20)
+
+# random 3,4 float matrix in range[-5,5)
+
+random_minus5to5 = np.random.rand(3,4)*10-5 
+# print(random_minus5to5)
+
+# matrix of random values from normal distribution with mean and sigma specified ir standard then 0 and 1
+random_normal = np.random.standard_normal((2,3))
+# print(random_normal)
+
+# generate 10,000 random normal values and find mean and standard deviation
+random_standard_normal_10000 = np.random.standard_normal(10000)
+# print(random_normal_10000.mean())
+# print(random_normal_10000.std())
+
+random_normal_50_10 = np.random.normal(50,10,10000)
+# print(random_normal_50_10.mean())
+
+# use of np.random.seed(42)
+
+# np.random.seed(42)
+# print(np.random.randint(1,100,5))
+
+# np.random.seed(41)
+# print(np.random.randint(1,100,5))
+
+# np.random.seed(42)
+
+a = np.random.randint(1, 100, 5)
+b = np.random.randint(1, 100, 5)
+
+# print(a)
+# print(b)
+
+
+# dtype conversion and memory 
+
+values = np.array([10, 20, 30, 40, 50]).astype(np.float32)
+# print(values.dtype)
+# print(values.itemsize)
+# print(values.nbytes)
+
+values1 = np.array([1.5, 2.7, 3.9], dtype=np.float32)
+values1 = values1.astype(np.int32)
+# print(values1)
+
+#                  Missing values with np.nan           ##
+
+data = np.array([10.0, 20.0, np.nan, 40.0, 50.0])
+# print(np.isnan(data))
+# print(data.mean())
+mean_value_w_nan = np.nanmean(data)
+max_value_w_nan = np.nanmax(data)
+min_value_w_nan = np.nanmin(data)
+total_w_nan = np.nansum(data)
+# print(mean_value_w_nan, max_value_w_nan,min_value_w_nan,total_w_nan)
+
+
+##                     Replacing missing values             ##
+
+data = np.where(np.isnan(data),np.nanmean(data),data)
+# print(data)
+
+data1 = np.array([10.0, 20.0, np.nan, 40.0, 50.0])
+logic = (np.isnan(data1)) | (np.isinf(data1))
+logic_edit = ~np.isfinite(data1)
+# print(logic_edit)
+# print(logic)
+
+
+data2 = np.array([10.0, np.nan, 25.0, np.inf, -np.inf, 40.0])
+logic2 = (np.isnan(data2)) | (np.isinf(data2))
+# data2 = np.where(logic2,0,data2)
+data3 = np.where(np.isfinite(data2), data2, 0)
+# print(data3)
+
+total_inf_nans = np.sum(~np.isfinite(data2))
+# print(total_inf_nans)
+
+data4 = data2.copy()
+data4 = np.where(np.isfinite(data2), data2, 0)
+
+##              View mode vs copy mode              ##
+
+original = np.array([10, 20, 30, 40, 50])
+
+slice_view = original[1:4]
+# print(slice_view)
+
+slice_view[0] = 999
+# print(slice_view.base)
+# print(slice_view)
+# print(original)
+
+##                               Squeeze  and expand_dims method                 ##
+
+arr = np.array([[[10], [20], [30]]])
+# print(arr.shape)
+# print(arr.ndim)
+
+arr_copy = arr.copy()
+arr_copy = np.squeeze(arr_copy)
+# print(arr_copy.shape)
+
+arr3 = np.array([10, 20, 30])
+
+arr3_copy1 = arr3.copy()
+arr3_copy2 = arr3.copy() 
+
+arr3_copy1 = np.expand_dims(arr3_copy1,axis=0)
+# print(arr3_copy1)
+
+arr3_copy2 =np.expand_dims(arr3_copy2,axis=1)
+# print(arr3_copy2)
+
+arr3_copy3 = arr3.copy()
+arr3_copy3 = np.expand_dims(arr3,axis=1)
+arr3_copy4 = np.expand_dims(arr3_copy3,axis=0)
+print(arr3_copy4.shape)
 
 
 
