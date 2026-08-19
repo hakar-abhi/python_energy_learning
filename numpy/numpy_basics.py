@@ -537,7 +537,17 @@ arr3_copy2 =np.expand_dims(arr3_copy2,axis=1)
 arr3_copy3 = arr3.copy()
 arr3_copy3 = np.expand_dims(arr3,axis=1)
 arr3_copy4 = np.expand_dims(arr3_copy3,axis=0)
-print(arr3_copy4.shape)
+# print(arr3_copy4.shape)
+
+arr_ = np.array([10,20,30])
+arr_column = arr_[np.newaxis,:]
+print(arr_column.shape)
+print(arr_column)
+
+arr_row = arr_[:,np.newaxis]
+print(arr_row)
+print(arr_row.shape)
+print(arr_)
 
 
 
