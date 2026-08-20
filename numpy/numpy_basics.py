@@ -541,16 +541,303 @@ arr3_copy4 = np.expand_dims(arr3_copy3,axis=0)
 
 arr_ = np.array([10,20,30])
 arr_column = arr_[np.newaxis,:]
-print(arr_column.shape)
-print(arr_column)
+# print(arr_column.shape)
+# print(arr_column)
 
 arr_row = arr_[:,np.newaxis]
-print(arr_row)
-print(arr_row.shape)
-print(arr_)
+# print(arr_row)
+# print(arr_row.shape)
+# print(arr_)
+
+matrix5 = np.array([
+    [10, 20, 30],
+    [40, 50, 60],
+    [70, 80, 90]
+])
+
+matrix5_selected_rows = matrix5[[0,2]]
+# print(matrix5_selected_rows)
+
+matrix_5_selected_columns = matrix5[:,[0,2]]
+# print(matrix_5_selected_columns)
+
+selected = matrix5[[0,2],[2,0]]
+
+# print(selected)
+
+##             Advanced Selection with np.ix_()              ##
+
+rows = [0,2]
+columns=[0,2]
+
+sub_matrix = matrix5[np.ix_(rows,columns)]
+# print(sub_matrix)
 
 
+##          Selection with np.take(array,[indices])       ##
+arr = np.array([10, 20, 30, 40, 50])
+selection_w_fancy = arr[[0,2,4]]
+selection_w_take = np.take(arr,[0,2,4])
+# print(selection_w_fancy)
+# print(selection_w_take)
 
+select_rows = np.take(matrix5,[0,2],axis=0)
+# print(select_rows)
+
+select_columns = np.take(matrix5,[0,2],axis=1)
+# print(select_columns)
+
+select_custom = np.take(matrix5,[2,0,2],axis=1)
+# print(select_custom)
+
+seelct_col_1 = np.take(matrix5,[1],axis=1)
+select_col_1_normal = matrix5[:,1]
+# print(seelct_col_1.shape)
+# print(select_col_1_normal.shape)
+
+
+##                            Use of np.delete()             ##
+arr = np.array([10, 20, 30, 40, 50])
+
+new_arr = np.delete(arr,[1,3])
+# print(new_arr)
+# print(arr)
+
+del_row_1 = np.delete(matrix5,1,axis=0)
+# print(del_row_1)
+
+##                          Use of np.insert()           ##
+
+arr = np.array([10, 20, 30, 40])
+
+new_arr = np.insert(arr,2,25)
+# print(new_arr)
+# print(arr)
+
+matrix = np.array([
+    [10, 20],
+    [30, 40]
+])
+
+new_matrix = np.insert(matrix,1,[50,60],axis=0)
+new_matrix_w_col = np.insert(matrix,1,[50,60],axis=1)
+# print(new_matrix_w_col)
+
+##                    Use of np.append()         ##
+
+new_appended = np.append(matrix,[[50,60]],axis=0)
+# print(new_appended)
+
+new_appended_col = np.append(matrix,[[50],[60]],axis=1)
+# print(new_appended_col)
+
+##                    Use of np.repeat()         ##
+
+arr = np.array([10, 20, 30])
+new_arr_repeat=  np.repeat(arr,2)
+# print(new_arr_repeat)
+
+matrix = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+new_matrix =np.repeat(matrix,2,axis=0)
+# print(new_matrix)
+
+matrix_new = np.repeat(matrix,[1,3],axis=0)
+# print(matrix_new)
+
+arr = np.array([10, 20, 30])
+arr_new = np.repeat(arr,[1,2,3])
+# print(arr_new)
+
+##                              Use of np.tile()            ##
+new_arr_tile = np.tile(arr,2)
+# print(new_arr_tile)
+
+new_arr_tile_rows = np.tile(arr,(3,1))
+# print(new_arr_tile_rows)
+
+
+##                   Use of np.flip()         ##
+
+arr = np.array([10, 20, 30, 40])
+reversed =np.flip(arr)
+# print(reversed)
+# print(arr)
+
+new_array = arr[::-1]
+# print(new_array)
+# print(arr)
+
+matrix = np.array([
+    [1, 2, 3],
+    [4, 5, 6]
+])
+
+row_flipped = np.flip(matrix,axis=0)
+col_flipped = np.flip(matrix,axis=1)
+# print(row_flipped)
+# print(col_flipped)
+
+
+##    NumPy Sorting  ##
+
+power = np.array([150, 90, 200, 120, 170])
+sorted_indices = np.argsort(power)
+# print(sorted_indices)
+# print(power[sorted_indices])
+# print(np.flip(sorted_indices))
+power_sort_descend = np.flip(power[sorted_indices])
+# print(power_sort_descend)
+
+matrix = np.array([
+    [30, 10, 20],
+    [60, 40, 50]
+])
+
+row_sort_ind = np.argsort(matrix,axis=0)
+col_sort_ind = np.argsort(matrix,axis=1)
+# print(row_sort_ind)
+# print(col_sort_ind)
+
+row_sort = np.sort(matrix,axis=0)
+col_sort = np.sort(matrix,axis=1)
+
+# print(row_sort)
+# print(col_sort)
+
+index_of_max_row_value = np.argmax(matrix,axis=1)
+# print(index_of_max_row_value)
+
+
+##                        Find max value with np.max()           ##
+max_row_value = np.max(matrix, axis=1)
+# print(max_row_value)
+
+##                       2D Boolean Filtering plus axis              ##
+
+matrix = np.array([
+    [30, 10, 20],
+    [60, 40, 50],
+    [25, 70, 15]
+])
+
+count_greater_than30 = np.sum(matrix>30,axis=1)
+# print(count_greater_than30)
+
+##                      Replace values < =30 by NaN then find NaN safe mean       ##
+
+matrix_replaced = np.where(matrix<=30,np.nan,matrix)
+# mean_each_col = np.nanmean(matrix_replaced,axis=0)
+# # print(mean_each_col)
+
+# count_greaterthan_equal40 = np.sum(matrix>=40,axis=1)
+# # print(count_greaterthan_equal40)
+
+# percentage_greater_thanequal40 = (count_greaterthan_equal40/matrix.shape[1])*100
+# print(percentage_greater_thanequal40)
+
+
+##                            Linear Algebra                     ##
+
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+result = np.dot(a,b)
+result_ = a@b
+# print(result)
+# print(result_)
+
+
+A = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+B = np.array([
+    [5, 6],
+    [7, 8]
+])
+
+# print(A@B)
+# print(A*B)
+
+# b = np.array([10, 20])
+# print(A*b)
+
+A = np.array([
+    [1, 2, 3],
+    [4, 5, 6]
+])
+
+B = np.array([
+    [10, 20],
+    [30, 40],
+    [50, 60]
+])
+
+# result_mul = A@B
+# print(result_mul.shape)
+
+# A = np.array([
+#     [1, 2, 3],
+#     [4, 5, 6]
+# ])
+
+# C = np.array([
+#     [1, 2],
+#     [3, 4]
+# ])
+
+# print(A@C)
+
+A = np.array([
+    [1, 2, 3],
+    [4, 5, 6]
+])
+
+v = np.array([10, 20, 30])
+
+result_1D_2_3_matrix = A@v
+# print(result_1D_2_3_matrix)
+# print(result_1D_2_3_matrix.shape)
+
+A = np.array([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+
+v = np.array([10, 20, 30])
+
+# print((v@A).shape)
+
+##             Transpose      ##
+A_transpose = A.T
+# print(A_transpose)
+
+# print(A@A.T)
+# print(A.T@A)
+
+M = A@A.T
+# print(np.array_equal(M,M.T))
+
+
+##                 np.any() np.all()
+values = np.array([10, 20, 30, 40, 50])
+
+# print(np.any(values==30))
+# print(np.all(values>60))
+
+matrix = np.array([
+    [10, 20, 30],
+    [40, 50, 60],
+    [70, 80, 90]
+])
+
+print(np.all(matrix,axis=1)>15)
 
 
 
