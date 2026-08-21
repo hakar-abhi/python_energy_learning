@@ -837,7 +837,237 @@ matrix = np.array([
     [70, 80, 90]
 ])
 
-print(np.all(matrix,axis=1)>15)
+# print(np.all((matrix>15),axis=1))
+# print(np.any((matrix>55),axis=1))
+# print(np.any((matrix>55),axis=0))
+# print(np.all((matrix>15),axis=0))
+# print(np.any((matrix%2==0),axis=1))
+
+##         Check atleast a row has value > 35     ##
+
+check_all_row = np.all((matrix>35),axis=1)
+# print(np.any(check_all_row))
+
+check_atleast_row = np.any((matrix>25),axis=1)
+# print(np.all(check_atleast_row))
+
+##                      Get the diagonal elements          ##
+
+matrix = np.array([
+    [10, 20, 30],
+    [40, 50, 60],
+    [70, 80, 90]
+])
+
+only_diagonal = np.diag(matrix)
+# print(only_diagonal)
+# print(np.sum(only_diagonal))
+
+sum_of_diagonal = np.trace(matrix)
+# print(sum_of_diagonal)
+
+arr = np.array([1,2,4])
+arr = np.diag(arr)
+# print(arr)
+
+##              extract the diagonal above main diagonal     ##
+
+diag_above_main = np.diag(matrix,k=1)
+diag_below_main = np.diag(matrix,k=-1)
+
+# print(diag_above_main)
+# print(diag_below_main)
+
+
+##               extract upper triangular and lower triangular matrices           ##
+
+upper = np.triu(matrix)
+# print(upper)
+
+lower =np.tril(matrix)
+# print(lower)
+
+upper_ohne_main = np.triu(matrix,k=1)
+# print(upper_ohne_main)
+
+w_k_minus1 = np.triu(matrix,k=-1)
+# print(w_k_minus1)
+
+##                  Get the Determinant      ##
+
+A = np.array([
+    [2, 1],
+    [3, 4]
+])
+
+determinant = np.linalg.det(A)
+# print(determinant)
+
+##                             Get the Inverse               ##
+
+inv = np.linalg.inv(A)
+# print(inv)
+# print(A@inv)
+
+##                Solving a small linear algebra problem with NumPy           ##
+
+A = np.array([
+    [2, 1],
+    [1, 3]
+])
+
+b = np.array([8, 13])
+
+x,y = np.linalg.solve(A,b)
+# print(f"x:{x}, y:{y}")
+
+##                   Calculate Eucledian Norm                  ##
+
+v = np.array([3, 4])
+norm = np.linalg.norm(v)
+# print(norm)
+
+v = np.array([2, -3, 6])
+norm_ =np.linalg.norm(v)
+# print(norm_)
+
+normalized_vector = v/norm_
+# print(np.linalg.norm(normalized_vector))
+# print(normalized_vector)
+
+a = np.array([1, 2, 3])
+b = np.array([2, 4, 6])
+
+a_norm = np.linalg.norm(a)
+b_norm = np.linalg.norm(b)
+
+normalized_a = a/a_norm
+normalized_b = b/b_norm
+
+# print(f"Normalized a: {normalized_a}")
+# print(f"Normalized b: {normalized_b}")
+
+a = np.array([1, 0])
+b = np.array([1, 1])
+
+norm_a = a/np.linalg.norm(a)
+norm_b = b/np.linalg.norm(b)
+
+# print(a@b)
+# print(norm_a@norm_b)
+
+cos_theta = np.clip(norm_a@norm_b,-1,1)
+
+angle_between = np.arccos(cos_theta)
+angle_between= np.degrees(angle_between)
+# print(angle_between)
+
+##                           Scalar Projection          ##
+
+a = np.array([3, 4])
+b = np.array([1, 0])
+
+dot_product = a @ b
+projection_of_a_on_b = dot_product/np.linalg.norm(b)
+# print(projection_of_a_on_b)
+
+##                           Vector Projection             ##
+a = np.array([3, 4])
+b = np.array([2, 0])
+
+dot_a_b = a @ b
+
+# projection of a onto b
+proj_a_on_b = (dot_a_b/((np.linalg.norm(b))**2))*b
+# print(proj_a_on_b)
+
+left_over_part_after_proj = a - proj_a_on_b
+# print(left_over_part_after_proj)
+
+# print(proj_a_on_b@left_over_part_after_proj)
+
+a = np.array([4, 2])
+b = np.array([1, 1])
+
+
+a_b_proj = ((a @ b)/np.linalg.norm(b)**2)*b
+# print(f"Vector Projection of a onto b:  {a_b_proj}")
+
+# print(f"Left over part of a is: {a-a_b_proj}")
+
+##             Float safe handling     ##
+
+a = np.array([0.1 + 0.2, 0.3, 0.5])
+b = np.array([0.3,       0.3, 0.5])
+
+result = np.allclose(a,b)
+# print(result)
+
+A = np.array([
+    [1.0, 2.0],
+    [3.0, 4.0]
+])
+
+matrix = A @ A.T
+
+# print(np.allclose(matrix,matrix.T))
+
+##                  Eigen values and Eigen vectors               ##
+
+A = np.array([
+    [2, 0],
+    [0, 3]
+])
+
+eigen_values = np.linalg.eigvals(A)
+eigen_values_,eigen_vectors = np.linalg.eig(A)
+# print(eigen_values)
+# print(eigen_values_,eigen_vectors)
+
+A = np.array([
+    [2, 0],
+    [0, 3]
+])
+
+eigen_values, eigen_vectors = np.linalg.eig(A)
+
+A_v = A @ eigen_vectors[:,0]
+# print(A_v)
+scalar_v = eigen_values[0]*eigen_vectors[:,0]
+# print(scalar_v)
+# print(np.allclose(A_v,scalar_v))
+
+A = np.array([
+    [4, 1],
+    [2, 3]
+])
+
+eigen_values, eigen_vectors = np.linalg.eig(A)
+# print(eigen_values)
+# print(eigen_vectors)
+
+# print(np.allclose(A@eigen_vectors[:,1],eigen_values[1]*eigen_vectors[:,1]))
+
+
+power = np.array([
+    [120, 135, 150],
+    [100, 110, 105],
+    [160, 170, 180],
+    [90,  95,  100]
+])
+
+# find the mean of each row
+# select only rows whose mean is greater than 130
+# find the maximum value in each selected row
+# find the column index of that maximum for each selected row
+# check whether all selected rows contain at least one value above 160
+
+mean_of_each_row = np.mean(power, axis=1)
+selected_rows = power[mean_of_each_row>130]
+max_value_in_each_row = np.max(selected_rows,axis=1)
+col_index_of_max_in_each_row = np.argmax(selected_rows,axis=1)
+print(np.all(np.any((selected_rows>160),axis=1)))
+
 
 
 
