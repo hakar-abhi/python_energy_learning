@@ -214,6 +214,26 @@ original_index_df = original_index_df.set_index("Power_MW")
 # print(new_data_frame.describe())
 # print(new_data_frame.describe(include="all"))
 
+##                    Count the unique values                 ##
+
+power_category = new_data_frame["Power_Category"]
+count = power_category.value_counts()
+# print(count)
+
+unique_categories = power_category.unique()
+# print(unique_categories)
+# print(power_category.nunique())
+
+##                           check if missing values exist          ##
+
+check_na = power_category.isna()
+print(check_na)
+
+
+
+
+
+
 
 
 
