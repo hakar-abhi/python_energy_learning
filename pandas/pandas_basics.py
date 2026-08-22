@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 ##                      Creating a Series with default index    ##
@@ -108,6 +109,111 @@ value_using_labels = data_frame.loc[2,"Power_MW"]
 
 data_frame_copy = data_frame.copy()
 new_data_frame = data_frame_copy.set_index("Day")
-print(new_data_frame)
+# print(new_data_frame)
 get_wed_power = new_data_frame.loc["Wed","Power_MW"]
-print(get_wed_power)
+# print(get_wed_power)
+
+get_data_tue_through_thu = new_data_frame.loc["Tue":"Thu"]
+# print(get_tue_through_thu)
+# print(type(get_tue_through_thu))
+
+get_power_tue_through_thu = new_data_frame.loc["Tue":"Thu",["Power_MW"]]
+# print(get_power_tue_through_thu)
+
+get_power_tue_and_thu = new_data_frame.loc[["Tue","Thu"],["Power_MW"]]
+# print(get_power_tue_and_thu)
+
+get_wind_tue_and_thu = new_data_frame.loc[["Tue","Thu"],["Wind_m_s"]]
+# print(get_wind_tue_and_thu)
+
+subset_where_power_greater_120 = new_data_frame[new_data_frame["Power_MW"]>120]
+# print(subset_where_power_greater_120)
+
+
+mask_used = (new_data_frame["Power_MW"] >120) & (new_data_frame["Wind_m_s"]>6.5)
+filtered_subset = new_data_frame[mask_used]
+# print(filtered_subset)
+
+new_mask = (new_data_frame["Power_MW"]>140) | (new_data_frame["Wind_m_s"]<6)
+filtered_newsubset = new_data_frame[new_mask]
+# print(filtered_newsubset)
+
+sorted_power_descend = new_data_frame.sort_values(by="Power_MW",ascending=False)
+# print(sorted_power_descend)
+
+sorted_wind_ascend = new_data_frame.sort_values(by="Wind_m_s")
+# print(sorted_wind_ascend)
+
+sort_power_ascend_wind_descend = new_data_frame.sort_values(by=["Power_MW","Wind_m_s"],ascending=[True,False])
+# print(sort_power_ascend_wind_descend)
+
+sort_by_row_index = new_data_frame.sort_index(axis=0)
+# print(sort_by_row_index)
+
+sort_by_col_index = new_data_frame.sort_index(axis=1)
+# print(sort_by_col_index)
+
+##                 Dataframe Inspection / Healthcheck              ##
+
+# print(new_data_frame.head())
+
+# new_data_frame.info()
+# print(new_data_frame.describe())
+
+# print(new_data_frame.tail(2))
+
+##                     Adding a new column         ##
+
+new_data_frame["Power_kW"] = new_data_frame["Power_MW"]*1000
+# print(new_data_frame)
+
+new_data_frame["High_Power"] = new_data_frame["Power_MW"] > 130
+# print(new_data_frame)
+
+new_data_frame["Power_Category"] = np.where(new_data_frame["Power_MW"]>130,"High","Low")
+# print(new_data_frame)
+
+##                           Removing selected column and row            ##
+
+modified_df = new_data_frame.drop(columns = ["Power_kW"])
+# print(modified_df)
+
+no_thu_df = new_data_frame.drop(index=["Thu"])
+# print(no_thu_df)
+
+no_thu_no_high_power = new_data_frame.drop(columns=["High_Power"],index=["Thu"])
+# print(no_thu_no_high_power)
+
+##             Renaming the columns, rows and index  ##
+
+column_name_changed = new_data_frame.rename(columns={"Wind_m_s":"Wind_Speed_m_s"})
+# print(column_name_changed)
+
+row_name_changed = new_data_frame.rename(index={"Mon":"Monday"})
+# print(row_name_changed)
+
+rows_names_changed = new_data_frame.rename(index ={"Tue":"Tuesday","Wed":"Wednesday"})
+# print(rows_names_changed)
+
+index_name_changed = new_data_frame.copy()
+index_name_changed.index.name = "Weekday"
+# print(index_name_changed)
+
+##                      Resetting the default index 0 1 2 3                 ##
+
+original_index_df =new_data_frame.reset_index()
+# print(original_index_df)
+
+original_index_df_ohne_Day = new_data_frame.reset_index(drop=True)
+# print(original_index_df_ohne_Day)
+
+original_index_df = original_index_df.set_index("Power_MW")
+# print(original_index_df)
+
+
+# print(new_data_frame.describe())
+# print(new_data_frame.describe(include="all"))
+
+
+
+
