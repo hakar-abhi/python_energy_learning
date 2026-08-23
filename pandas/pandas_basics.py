@@ -227,7 +227,175 @@ unique_categories = power_category.unique()
 ##                           check if missing values exist          ##
 
 check_na = power_category.isna()
-print(check_na)
+# print(check_na)
+
+s = pd.Series([10, np.nan, 30, np.nan, 50])
+# print(s)
+
+total_missing_values = s.isna().sum()
+# print(f"Total missing values: {total_missing_values}")
+
+new_s = s[~s.isna()]
+# print(new_s)
+
+##                   Keeping only non missing values       ##
+
+filtered_s = s.dropna()
+# print(filtered_s)
+
+s_with_index_reset = filtered_s.reset_index(drop=True)
+# print(s_with_index_reset)
+
+s_missing_filled_with_zero = s.fillna(0)
+# print(s_missing_filled_with_zero)
+
+s_missing_filled_w_mean = s.fillna(s.mean())
+# print(s_missing_filled_w_mean)
+
+s_fill_w_prev_valid_value = s.ffill()
+# print(s_fill_w_prev_valid_value)
+
+s_fill_w_next_valid_value = s.bfill()
+# print(s_fill_w_next_valid_value)
+
+test_s = pd.Series([np.nan, 4, "cristiano", "is", "gay", np.nan, 4, np.nan])
+test_s_w_bfill_n_ffill = test_s.bfill().ffill()
+test_s_w_ffill_n_bfill = test_s.ffill().bfill()
+
+# print(test_s_w_bfill_n_ffill)
+# print(test_s_w_ffill_n_bfill)
+
+##           Identify Duplicates & keep only the unique ones          ##
+
+s = pd.Series([10, 20, 20, 30, 40, 40, 40, 50])
+
+# print(s.duplicated())
+
+keep_non_duplicates = s.drop_duplicates()
+# print(keep_non_duplicates)
+
+keep_non_duplicates_last_occurence = s.drop_duplicates(keep="last")
+# print(keep_non_duplicates_last_occurence)
+
+##          Duplicates filtering in DataFrame         ##
+
+df = pd.DataFrame({
+    "Turbine": ["T1", "T1", "T2", "T2", "T2"],
+    "Power_MW": [2.1, 2.1, 1.8, 1.9, 1.9]
+})
+
+# print(df.duplicated())
+
+keep_first_remove_dups = df.drop_duplicates()
+# print(keep_first_remove_dups)
+
+turbine_duplicates_df = df.duplicated(subset=["Turbine"])
+# print(turbine_duplicates_df)
+
+df_ohne_duplicates_turbine = df.drop_duplicates(subset=["Turbine"])
+# print(df_ohne_duplicates_turbine)
+
+##                       Datatype identification & conversion                  ##
+
+
+df = pd.DataFrame({
+    "Power_MW": ["120", "135", "150", "110"],
+    "Wind_m_s": [6.2, 7.1, 8.0, 5.8]
+})
+
+# print(df.dtypes)
+
+df = df.astype({"Power_MW":"int64"})
+# print(df.dtypes)
+
+df = pd.DataFrame({
+    "Power_MW": ["120", "135", "bad", "110"],
+    "Wind_m_s": [6.2, 7.1, 8.0, 5.8]
+})
+
+# print(df.dtypes)
+
+df["Power_MW"] = pd.to_numeric(df["Power_MW"],errors="coerce")
+# print(df["Power_MW"])
+
+# df = df.astype({"Power_MW":"int64"},errors="ignore")
+# print(df)
+# print(df.dtypes)
+
+total_missing = df["Power_MW"].isna().sum()
+# print(total_missing)
+
+# print(df)
+
+cleaned_df = df.dropna(subset=["Power_MW"])
+# print(cleaned_df)
+
+cleaned_df = cleaned_df.reset_index(drop=True)
+# print(cleaned_df)
+
+filled_df = df.copy()
+
+filled_df["Power_MW"] = filled_df["Power_MW"].fillna(filled_df["Power_MW"].mean())
+# print(filled_df)
+
+
+data_provided = {
+    "Location" : [np.nan, "Dortmund", "Berlin",np.nan],
+    "Salary" : [np.nan, np.nan, 720000, 60000],
+    "Category": ["TSO", "TSO","TSO", "TSO"]
+}
+
+df = pd.DataFrame(data = data_provided, index=["Tennet","Amprion","50Hertz","Transnet"])
+# print(df)
+
+cleaned_df_ = df.dropna()
+# print(cleaned_df_)
+# print(df.dtypes)
+# print(df.shape)
+# print(df.describe(include="all"))
+
+only_salary_miss_df = df.dropna(subset=["Salary"])
+
+salary_location_miss_df = df.dropna(
+    subset=["Salary","Location"], 
+    how="all"
+    )
+# print(salary_location_miss_df)
+
+df["Location"] = df["Location"].fillna("Unknown")
+df["Salary"] = df["Salary"].fillna(df["Salary"].mean())
+
+# print(df)
+
+# print(df.isna().any().any())
+
+
+##                             String cleaning               ##
+
+df = pd.DataFrame({
+    "Turbine": [" T1", "T2 ", " T3 ", "T4"],
+    "Status": [" running", "STOPPED ", " Running ", "stopped"]
+})
+
+print(df)
+
+df["Turbine"] = df["Turbine"].str.strip()
+df["Status"] = df["Status"].str.strip().str.lower()
+
+print(df)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
