@@ -373,16 +373,113 @@ df["Salary"] = df["Salary"].fillna(df["Salary"].mean())
 ##                             String cleaning               ##
 
 df = pd.DataFrame({
-    "Turbine": [" T1", "T2 ", " T3 ", "T4"],
-    "Status": [" running", "STOPPED ", " Running ", "stopped"]
+    "Turbine": [" T1", "T2 ", " T3 ", "T4","T5"],
+    "Status": [" running", "STOPPED ", " Running ", "stopped","maintenance"]
 })
 
-print(df)
+# print(df)
 
 df["Turbine"] = df["Turbine"].str.strip()
 df["Status"] = df["Status"].str.strip().str.lower()
 
-print(df)
+# print(df)
+
+mask = (df["Status"] == "running")
+# print(mask)
+
+df.insert(2,"Status_Bool",mask)
+
+df.insert(3,"Status_Code",(np.where(df["Status"]=="running",1,0)))
+
+mapping = {
+    "running":"Active",
+    "stopped" : "Inactive"
+}
+
+df.insert(
+    4,
+    "Status_Label",
+    df["Status"].map(mapping)
+)
+
+df = df.replace(["running","stopped"],["Active","Inactive"])
+
+
+edited_df = df.copy()
+
+new_df = df.copy()
+
+
+mask = edited_df["Status"].str.contains("a")
+
+edited_df = edited_df[mask]
+
+# print(edited_df)
+
+filtering_start = edited_df["Status"].str.startswith("A")
+filtering_end = edited_df["Status"].str.endswith("e")
+
+mask_used = filtering_start | filtering_end
+
+# print(filtering_start)
+# print(filtering_end)
+
+starting_with_df = edited_df[filtering_start]
+ending_with_df = edited_df[filtering_end]
+
+filtered_df = edited_df[mask_used]
+
+# print(filtered_df)
+
+# mask_contains = (new_df["Status"].str.contains(("active"),case=False)) | (new_df["Status"].str.contains(("maint"),case=False))
+
+# new_df = new_df[mask_contains]
+
+# print(new_df)
+
+
+##                            Filtering with regex          ##
+
+mask_ = new_df["Status"].str.contains("active|maint",case=False)
+new_df = new_df[mask_]
+# print(new_df)
+
+new_df["Status"] = new_df["Status"].str.replace("maint","service")
+# print(new_df)
+
+new_df.insert(5,"Status_Length",new_df["Status"].str.len())
+new_df.insert(6,"Turbine_Number",new_df["Turbine"].str.extract(r"(\d+)"))
+
+new_df["Turbine_Number"] = pd.to_numeric(new_df["Turbine_Number"],errors="coerce")
+
+# print(new_df["Turbine_Number"].dtype)
+
+
+# print(starting_with_df)
+# print(ending_with_df)
+
+
+df = pd.DataFrame({
+    "Asset_ID": ["WT-101", "WT-205", "PV-310", "WT-412"]
+})
+
+# df.insert(1,"Asset_Type",df["Asset_ID"].str.extract(r"([A-Z]+)"))
+df.insert(1,"Asset_Type",df["Asset_ID"].str.split("-").str[0])
+df.insert(2,"Asset_Number",df["Asset_ID"].str.extract(r"(\d+)"))
+
+df["Asset_Number"] = pd.to_numeric(df["Asset_Number"],errors="coerce")
+
+
+
+print(df["Asset_Number"].dtype)
+
+
+
+
+
+
+# print(df)
+
 
 
 
