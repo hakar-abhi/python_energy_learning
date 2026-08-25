@@ -467,7 +467,9 @@ df = pd.DataFrame({
 df.insert(1,"Asset_Type",df["Asset_ID"].str.split("-").str[0])
 df.insert(2,"Asset_Number",df["Asset_ID"].str.extract(r"(\d+)"))
 
-df["Asset_Number"] = pd.to_numeric(df["Asset_Number"],errors="coerce")
+df["Asset_Number"] = pd.to_numeric(df["Asset_Number"])
+
+
 
 
 
