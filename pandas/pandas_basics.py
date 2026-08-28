@@ -471,9 +471,34 @@ df["Asset_Number"] = pd.to_numeric(df["Asset_Number"])
 
 
 
+mask = (df["Asset_Type"] == "WT") & (df["Asset_Number"] > 200)
+
+filtered_df = df[mask]
+
+# print(df.head())
+
+# print(filtered_df.head())
+
+##                    Counting how many counts do each category have                ##
+
+each_category = df["Asset_Type"].value_counts()
+
+# print(each_category)
 
 
-print(df["Asset_Number"].dtype)
+##              Grouping by category and finding mean of each category       ##
+
+print(df.groupby("Asset_Type")["Asset_Number"].mean())
+
+
+
+
+
+
+
+
+
+# print(df["Asset_Number"].dtype)
 
 
 
