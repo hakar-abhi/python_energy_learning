@@ -488,7 +488,74 @@ each_category = df["Asset_Type"].value_counts()
 
 ##              Grouping by category and finding mean of each category       ##
 
-print(df.groupby("Asset_Type")["Asset_Number"].mean())
+# # print(df.groupby("Asset_Type")["Asset_Number"].mean())
+# print(df)
+# print(df.groupby("Asset_Type")["Asset_Number"].mean())
+# print(df.groupby("Asset_Type")["Asset_Number"].max())
+
+# print(df.groupby("Asset_Type")["Asset_Number"].agg(["mean","max"]))
+
+# print(df.groupby("Asset_Type")["Asset_Number"].agg(["count","mean","min","max"]))
+
+
+df = pd.DataFrame({
+    "Asset_Type": ["WT", "WT", "PV", "PV", "WT"],
+    "Asset_Number": [101, 205, 310, 412, 250],
+    "Power_MW": [2.1, 2.4, 1.2, 1.5, 2.3]
+})
+
+# group_1 = df.groupby("Asset_Type").agg({"Asset_Number":["mean","max"],
+#                                         "Power_MW":["mean","min"]})
+# print(group_1)
+
+df = pd.DataFrame({
+    "Asset_Type": ["WT", "WT", "PV", "PV", "WT"],
+    "Site": ["North", "South", "North", "South", "North"],
+    "Power_MW": [2.1, 2.4, 1.2, 1.5, 2.3]
+})
+
+group_2 = df.groupby(["Asset_Type","Site"])["Power_MW"].mean()
+
+group_2 = group_2.reset_index()
+# print(group_2)
+
+group_3 = df.groupby("Site")["Power_MW"].agg(["min","max"])
+
+group_3["range"] = group_3["max"]-group_3["min"]
+
+# print(group_3)
+
+
+##                          Named Aggregation                      ##
+
+group_4 = df.groupby("Asset_Type").agg(Average_Power_MW = ("Power_MW","mean"))
+print(group_4)
+
+group_5 = df.groupby("Asset_Type").agg(Average_Power_MW = ("Power_MW","mean"),
+                                       Maximum_Power_MW = ("Power_MW","max"),
+                                       Asset_Count = ("Power_MW","count")
+
+
+)
+
+group_6 = df.groupby("Site").agg(
+    Average_Power_MW = ("Power_MW","mean"),
+    Minimum_Power_MW = ("Power_MW","min"),
+    Maximum_Power_MW = ("Power_MW","max")
+
+)
+
+print(group_6)
+
+
+
+
+
+
+
+
+
+
 
 
 
