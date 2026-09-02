@@ -529,7 +529,7 @@ group_3["range"] = group_3["max"]-group_3["min"]
 ##                          Named Aggregation                      ##
 
 group_4 = df.groupby("Asset_Type").agg(Average_Power_MW = ("Power_MW","mean"))
-print(group_4)
+# print(group_4)
 
 group_5 = df.groupby("Asset_Type").agg(Average_Power_MW = ("Power_MW","mean"),
                                        Maximum_Power_MW = ("Power_MW","max"),
@@ -538,14 +538,125 @@ group_5 = df.groupby("Asset_Type").agg(Average_Power_MW = ("Power_MW","mean"),
 
 )
 
-group_6 = df.groupby("Site").agg(
-    Average_Power_MW = ("Power_MW","mean"),
-    Minimum_Power_MW = ("Power_MW","min"),
-    Maximum_Power_MW = ("Power_MW","max")
+
+##                                Concatenating                  ##
+
+df1 = pd.DataFrame({
+    "Turbine": ["T1", "T2"],
+    "Power_MW": [2.1, 2.3]
+})
+
+df2 = pd.DataFrame({
+    "Turbine": ["T3", "T4"],
+    "Power_MW": [1.9, 2.4]
+})
+
+df = pd.concat([df1,df2], ignore_index = True)
+
+df_ = pd.concat([df1,df2],axis = 1)
+# print(df_)
+
+power_df = pd.DataFrame({
+    "Power_MW": [2.1, 2.3, 1.9]
+}, index=["T1", "T2", "T3"])
+
+weather_df = pd.DataFrame({
+    "Wind_m_s": [7.2, 8.1, 6.5]
+}, index=["T1", "T2", "T3"])
+
+df = pd.concat([power_df,weather_df],axis=1)
+# print(df)
+
+
+
+##                          Merging with matching key                 ##
+
+power_df = pd.DataFrame({
+    "Turbine": ["T1", "T2", "T3"],
+    "Power_MW": [2.1, 2.3, 1.9]
+})
+
+weather_df = pd.DataFrame({
+    "Turbine": ["T1", "T2", "T3"],
+    "Wind_m_s": [7.2, 8.1, 6.5]
+})
+
+df = power_df.merge(weather_df, how = "inner", on = "Turbine")
+
+power_df = pd.DataFrame({
+    "Turbine": ["T1", "T2", "T3"],
+    "Power_MW": [2.1, 2.3, 1.9]
+})
+
+weather_df = pd.DataFrame({
+    "Turbine": ["T2", "T3", "T4"],
+    "Wind_m_s": [8.1, 6.5, 7.8]
+})
+
+left_merged_df = power_df.merge(weather_df,how="left",on="Turbine")
+right_merged_df = power_df.merge(weather_df,how="right",on="Turbine")
+
+# print(left_merged_df)
+# print(right_merged_df)
+
+
+power_df = pd.DataFrame({
+    "Turbine": ["T1", "T2"],
+    "Power_MW": [2.1, 2.3]
+})
+
+scenario_df = pd.DataFrame({
+    "Scenario": ["LowWind", "HighWind", "Storm"]
+})
+
+cross_merged_df = power_df.merge(scenario_df,how="cross")
+# print(cross_merged_df)
+
+
+##                          Merging when key column has different names on the dataframes             ##
+
+power_df = pd.DataFrame({
+    "Turbine_ID": ["T1", "T2", "T3"],
+    "Power_MW": [2.1, 2.3, 1.9]
+})
+
+weather_df = pd.DataFrame({
+    "Asset_ID": ["T1", "T2", "T3"],
+    "Wind_m_s": [7.2, 8.1, 6.5]
+})
+
+merged_df = power_df.merge(weather_df, how="inner", left_on="Turbine_ID", right_on="Asset_ID")
+
+# print(merged_df)
+
+
+power_df = pd.DataFrame({
+    "Turbine_ID": ["T1", "T2", "T3"],
+    "Power_MW": [2.1, 2.3, 1.9]
+})
+
+weather_df = pd.DataFrame({
+    "Wind_m_s": [7.2, 8.1, 6.5]
+}, index=["T1", "T2", "T3"])
+
+
+new_df = power_df.merge(weather_df, left_on="Turbine_ID", right_index=True)
+
+# print(new_df)
+
+weather_df = pd.DataFrame({
+    "Wind_m_s": [7.2, 6.5]
+}, index=["T1", "T3"])
+
+new_df = power_df.merge(
+    weather_df,
+    how="left",
+    left_on = "Turbine_ID",
+    right_index = True
 
 )
 
-print(group_6)
+print(new_df)
 
 
 
