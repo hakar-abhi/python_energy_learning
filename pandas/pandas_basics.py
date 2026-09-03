@@ -656,7 +656,221 @@ new_df = power_df.merge(
 
 )
 
-print(new_df)
+power_df = pd.DataFrame({
+    "Turbine_ID": ["T1", "T2", "T3"],
+    "Power_MW": [2.1, 2.3, 1.9]
+})
+
+weather_df = pd.DataFrame({
+    "Turbine_ID": ["T2", "T3", "T4"],
+    "Wind_m_s": [8.1, 6.5, 7.8]
+})
+
+new_df = power_df.merge(
+    weather_df,
+    how= "outer",
+    on = "Turbine_ID",
+    indicator = True
+
+)
+
+# print(new_df)
+
+unique_values_ = new_df["_merge"].value_counts()
+# print(type(unique_values_))
+
+
+left_df = pd.DataFrame({
+    "Turbine_ID": ["T3", "T2", "T3"],
+    "Power_MW": [2.1, 2.3, 1.9]
+})
+
+right_df = pd.DataFrame({
+    "Turbine_ID": ["T2", "T2", "T3"],
+    "Wind_m_s": [7.2, 8.1, 6.5]
+})
+
+
+merged_df = left_df.merge(
+    right_df,
+    how="left",
+    on="Turbine_ID",
+    validate="many_to_many"
+
+)
+
+# print(merged_df)
+
+
+left_df = pd.DataFrame({
+    "Turbine_ID": ["T1", "T2"],
+    "Power_MW": [2.1, 2.3]
+})
+
+right_df = pd.DataFrame({
+    "Turbine_ID": ["T1", "T2"],
+    "Power_MW": [2.0, 2.4]
+})
+
+merged_df = left_df.merge(
+    right_df,
+    how="left",
+    on = "Turbine_ID",
+    validate = "one_to_one",
+    suffixes = ("_left","_right")
+
+)
+
+merged_df["Power_Difference"] = (merged_df["Power_MW_left"]-merged_df["Power_MW_right"])
+
+merged_df["Absolute_Difference"] = abs(merged_df["Power_MW_left"]-merged_df["Power_MW_right"])
+merged_df["Difference_Percent"] = (merged_df["Absolute_Difference"]/merged_df["Power_MW_right"])*100
+
+merged_df["Difference_Percent"] = merged_df["Difference_Percent"].round(2)
+
+merged_df["Within_5_Percent"]  = merged_df["Difference_Percent"] <= 5
+
+count = merged_df["Within_5_Percent"].value_counts()
+
+percentage_within_5_percent = count[True]/count.sum()*100
+# print(percentage_within_5_percent)
+
+
+# print(merged_df)
+
+
+
+##                             DateTime   with Pandas                   ##
+
+
+# df = pd.DataFrame({
+#     "Timestamp": [
+#         "2026-09-01 08:00",
+#         "2026-09-01 09:00",
+#         "2026-09-01 10:00"
+#     ],
+#     "Power_MW": [2.1, 2.3, 2.0]
+# })
+
+df = pd.DataFrame({
+    "Timestamp": pd.to_datetime([
+        "2026-09-01 06:00",
+        "2026-09-01 09:00",
+        "2026-09-01 12:00",
+        "2026-09-01 17:00",
+        "2026-09-01 20:00",
+        "2026-09-02 07:00",
+        "2026-09-02 10:00",
+        "2026-09-02 15:00",
+        "2026-09-02 18:00",
+        "2026-09-03 11:00"
+    ]),
+    "Power_MW": [1.2, 1.8, 2.3, 2.0, 1.4, 1.1, 1.9, 2.4, 1.7, 2.2]
+})
+
+# print(df.dtypes)
+# print(df.head())
+
+df["Timestamp"] = pd.to_datetime(df["Timestamp"])
+
+
+
+##                             hour accessor                       ##
+
+df["year"]  = df["Timestamp"].dt.year
+df["month"]  = df["Timestamp"].dt.month
+df["day"]  = df["Timestamp"].dt.day
+df["hour"]  = df["Timestamp"].dt.hour
+df["minute"]  = df["Timestamp"].dt.minute
+df["second"] = df["Timestamp"].dt.second
+
+df["dayname"]  = df["Timestamp"].dt.day_name()
+
+df["is_weekend"]  = df["Timestamp"].dt.dayofweek >= 5
+# print(df["hour"])
+
+mask = (df["hour"] >= 9) & (df["hour"] <= 17)
+new_df = df[mask]
+
+sept2_mask = (df["month"] == 9) & (df["day"] == 2)
+
+sept2_data = df[sept2_mask]
+
+sept2_hour_mask = (sept2_data["hour"] >= 10) & (sept2_data["hour"] <= 18)
+
+sept2_filtered_hour = sept2_data[sept2_hour_mask]
+# print(sept2_filtered_hour)
+
+df = df.set_index("Timestamp")
+
+df = df.sort_index()
+
+# print(df.head(2))
+# print(df.index)
+
+sept2_df = df.loc["2026-09-02"]
+
+sept1_bis_2_9_bis_15 = df.loc["2026-09-01 09:00":"2026-09-02 15:00"]
+
+# print(sept1_bis_2_9_bis_15)
+
+daily_mean = df["Power_MW"].resample("1D").mean()
+
+# print(daily_mean)
+
+summary = df["Power_MW"].resample("1D").agg(["mean","max","min"])
+
+total_per_day = df["Power_MW"].resample("1D").sum()
+
+
+
+df["rolling_mean_3"] = df["Power_MW"].rolling(3,min_periods=1).mean()
+
+# print(df.head(5))
+
+df["rolling_max_3"]  = df["Power_MW"].rolling(3).max()
+
+df["rolling_min_3"]  = df["Power_MW"].rolling(3).mean()
+
+df["range"]   = df["rolling_max_3"] - df["rolling_min_3"]
+
+
+df["Previous_Power_MW"] = df["Power_MW"].shift(periods=1)
+
+df["Power_Change"] = df["Power_MW"]-df["Previous_Power_MW"]
+
+df["Percentage_change"] = df["Power_MW"].pct_change(periods=1)*100
+
+df["Power_Lag_2"] = df["Power_MW"].shift(periods=2)
+
+df["Power_Lag_3"] = df["Power_MW"].shift(periods=3)
+
+df["Power_Difference_2"] = df["Power_MW"] - df["Power_Lag_2"]
+
+
+df["Lag_1_Percent_Change"] = (df["Power_MW"]-df["Previous_Power_MW"])/(df["Previous_Power_MW"])*100
+
+# print(df[["Power_MW","Power_Lag_2","Power_Lag_3","Power_Difference_2"]])
+
+
+df["Lag_2_Percent_Change"] = df["Power_MW"].pct_change(periods=2)*100
+# print(df[["Percentage_change","Lag_1_Percent_Change","Lag_2_Percent_Change"]])
+
+df = df.drop(columns=["Percentage_change"])
+
+print(df.columns)
+# print(df.head(4).T)
+
+# print(total_per_day)
+# print(df)
+
+# print(summary)
+
+
+
+
+
+
 
 
 
