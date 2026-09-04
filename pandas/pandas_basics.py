@@ -858,7 +858,7 @@ df["Lag_2_Percent_Change"] = df["Power_MW"].pct_change(periods=2)*100
 
 df = df.drop(columns=["Percentage_change"])
 
-print(df.columns)
+
 # print(df.head(4).T)
 
 # print(total_per_day)
@@ -866,6 +866,78 @@ print(df.columns)
 
 # print(summary)
 
+timestamps = pd.date_range(start = "2026-09-01 00:00", periods=8, freq="30min")
+# print(timestamps)
+
+
+
+df_regular = pd.DataFrame({
+    
+    "Power_MW" : [1.2, 1.4, 1.8, 2.0, 2.1, 1.9, 1.6, 1.3]
+
+
+},
+index=timestamps    
+)
+
+df_regular.index.name = "Timestamp"
+
+total_energy_MWh = df_regular["Power_MW"].sum()*0.5
+
+# print(f"Total energy: {total_energy_MWh} MWh")
+
+df_regular["Energy_MWh"] = df_regular["Power_MW"]*0.5
+
+# print(df_regular.head())
+
+# total_energy = df_regular["Energy_MWh"].sum()
+# print(total_energy)
+
+hourly_summary = df_regular.resample("1h").agg({
+    "Power_MW": "mean",
+    "Energy_MWh": "sum"
+})
+# print(hourly_summary)
+
+df_regular["rolling_mean_1h"]  = df_regular["Power_MW"].rolling("1h").mean()
+df_regular["rolling_2_rows"]  = df_regular["Power_MW"].rolling(2).mean()
+
+df_regular.drop(columns=["rolling_2_rows"],inplace=True)
+# print(df_regular.head())
+
+irregular_times = pd.to_datetime([
+    "2026-09-01 00:00",
+    "2026-09-01 00:30",
+    "2026-09-01 01:00",
+    "2026-09-01 02:00",
+    "2026-09-01 02:20",
+    "2026-09-01 05:00"
+])
+
+df_irregular = pd.DataFrame(
+    {
+        "Power_MW": [1.0, 2.0, 2.5, 3.0, 4.0, 5.0]
+    },
+    index = irregular_times
+)
+
+df_irregular.index.name = "Timestamp"
+
+df_irregular["rolling_2_rows"] = df_irregular["Power_MW"].rolling(2).mean()
+df_irregular["rolling_1h"] = df_irregular["Power_MW"].rolling("1h").mean()
+
+df_irregular["1h_both"] = df_irregular["Power_MW"].rolling("1h",closed="both").mean()
+
+# print(df_irregular.head())
+
+
+##                                           Interpolation                                      ##
+
+df_missing = df_regular.copy()
+
+df_missing.loc[df_missing.index[2],"Power_MW"] = np.NaN
+
+# print(df_missing["Power_MW"])
 
 
 
@@ -874,30 +946,6 @@ print(df.columns)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# print(df["Asset_Number"].dtype)
-
-
-
-
-
-
-# print(df)
 
 
 
