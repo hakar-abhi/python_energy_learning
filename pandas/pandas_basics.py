@@ -933,13 +933,122 @@ df_irregular["1h_both"] = df_irregular["Power_MW"].rolling("1h",closed="both").m
 
 ##                                           Interpolation                                      ##
 
+## Position based interpolation
 df_missing = df_regular.copy()
 
 df_missing.loc[df_missing.index[2],"Power_MW"] = np.NaN
 
+df_missing["Power_MW"] = df_missing["Power_MW"].interpolate()
 # print(df_missing["Power_MW"])
 
+df_missing_2 = df_regular.copy()
 
+
+
+df_missing_2.loc[[df_missing_2.index[2],df_missing_2.index[3]],"Power_MW"] = np.nan
+
+# df_missing_2["Power_MW"] = df_missing_2["Power_MW"].interpolate()
+
+# print(df_missing_2)
+
+## Time based interpolation
+
+df_missing_2["Power_MW"] = df_missing_2["Power_MW"].interpolate(method="time")
+
+# print(df_missing_2)
+
+df_irregular.iloc[2,0] = np.nan
+
+df_irregular["normal-interpolation"] = df_irregular["Power_MW"].interpolate()
+df_irregular["time-based-interpolation"] = df_irregular["Power_MW"].interpolate(method="time")
+
+# print(df_irregular.head())
+
+# print(df_regular)
+
+df_gap = df_regular.drop("2026-09-01 01:00:00")
+
+df_gap = df_gap.asfreq(freq="30min")
+df_gap["Power_MW"] = df_gap["Power_MW"].interpolate(method="time")
+
+# print(df_gap.head())
+
+df_gap2 = df_regular.copy()
+
+df_gap2 =  df_gap2.drop("2026-09-01 01:00:00")
+
+expected_index = pd.date_range(start="2026-09-01 00:00:00", periods=8, freq="30min")
+
+# expected_index = pd.Index(timestamps)
+
+missing = expected_index.difference(df_gap2.index)
+
+# if len(missing) > 0:
+#     print("Missing timestamps found")
+# else:
+#     print("No missing timestamps")
+
+expected_index = pd.date_range(
+    start=df_gap2.index.min(),
+    end = df_gap2.index.max(),
+    freq = "30min"
+
+)
+
+missing = expected_index.difference(df_gap2.index)
+
+# if len(missing) > 0:
+#     print(f"Missing timestamps found: {missing}")
+# else:
+#     print("No missing timestamps")
+
+
+
+    
+def find_missing_timestamps(df,freq):
+
+    if df.empty:
+        return pd.DatetimeIndex([])
+    if not isinstance(df.index,pd.DatetimeIndex):
+        raise TypeError("Index must be a pandas DatetimeIndex")
+    expected_index = pd.date_range(
+        start=df.index.min(),
+        end = df.index.max(),
+        freq = freq
+    )
+    missing = expected_index.difference(df.index)
+
+    return missing
+
+test_df = pd.DataFrame({
+    "name":["TS","SU","CR"],
+    "age":[29,32,46],
+    "job":["PhD","PhD","Professor"]
+},
+    index=[1,2,3]
+) 
+
+
+
+try:
+
+    result = find_missing_timestamps(df_gap2,"30min")
+
+except TypeError as error:
+    print(error)
+else:
+    if len(result)>0:
+
+        print(f"Missing timestamps: {result}")
+    else:
+        print("No timestamps missing")
+
+
+
+
+
+
+# print(expected_index)
 
 
 
